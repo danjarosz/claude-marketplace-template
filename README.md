@@ -83,28 +83,7 @@ Triggers automatically when you ask questions or request work in the agent's dom
 
 | Command | Arguments | Description |
 |---------|-----------|-------------|
-| `/implement` | `<url-or-description>` | Plan and implement a feature or fix. Two phases: (1) analysis & plan, (2) implementation after approval. |
 | `/commands` | — | Display the quick-reference table of all commands with arguments, descriptions, and usage tips. |
-
-### `/implement`
-
-Plan and implement a feature or fix from an issue URL or plain-text description. Runs in two phases:
-
-1. **Analysis & Plan** — Extracts requirements (fetches URLs via WebFetch or uses plain text), explores the codebase, and drafts an implementation plan covering approach, files, steps, testing, and documentation.
-2. **Implementation** — After the user approves the plan, executes it incrementally, validates with type checks / linters / tests, updates documentation, and asks before committing.
-
-```bash
-# From an issue URL
-/implement https://example.com/issues/123
-
-# From a plain-text description
-/implement Add a responsive navbar component with mobile hamburger menu
-```
-
-**Tips for best results:**
-
-- **Issue URLs** — Include a clear title, description with context, acceptance criteria as a checklist, and links to designs or mockups. If authentication blocks WebFetch, paste the issue content directly or configure an appropriate MCP server.
-- **Plain text** — Be specific about what to build, where, and any constraints.
 
 ### `/commands`
 

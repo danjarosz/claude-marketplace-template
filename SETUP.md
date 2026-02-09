@@ -106,7 +106,6 @@ sed -i '' 's/{{PLUGIN_CATEGORY}}/YOUR_PLUGIN_CATEGORY/g' \
 # --- Agent placeholders ---
 sed -i '' 's/{{AGENT_NAME}}/YOUR_AGENT_NAME/g' \
   plugins/my-plugin/agents/my-agent.md \
-  plugins/my-plugin/commands/implement.md \
   README.md CLAUDE.md docs/FEATURES.md
 
 sed -i '' 's/{{AGENT_DISPLAY_NAME}}/YOUR_AGENT_DISPLAY_NAME/g' \
@@ -141,13 +140,6 @@ mv plugins/YOUR_PLUGIN_NAME/agents/my-agent.md plugins/YOUR_PLUGIN_NAME/agents/Y
 sed -i '' 's|./plugins/my-plugin|./plugins/YOUR_PLUGIN_NAME|g' .claude-plugin/marketplace.json
 ```
 
-And update the agent reference in the `/implement` command:
-
-```bash
-# Update the agent reference path (replace YOUR_AGENT_NAME)
-sed -i '' 's|agents/my-agent.md|agents/YOUR_AGENT_NAME.md|g' plugins/YOUR_PLUGIN_NAME/commands/implement.md
-```
-
 ### Step 5: Customize the Agent
 
 Open `plugins/YOUR_PLUGIN_NAME/agents/YOUR_AGENT_NAME.md` and customize:
@@ -161,7 +153,6 @@ Open `plugins/YOUR_PLUGIN_NAME/agents/YOUR_AGENT_NAME.md` and customize:
 Open the command files in `plugins/YOUR_PLUGIN_NAME/commands/` and customize:
 
 1. **`commands.md`** — Update the command table if you add or rename commands.
-2. **`implement.md`** — The `/implement` command works generically out of the box. Customize the URL detection logic if you want to handle specific services (e.g., Jira, Linear, GitHub Issues).
 
 ### Step 7: Make Scripts Executable
 
@@ -186,7 +177,7 @@ git push -u origin main
 
 Then open Claude Code and verify:
 - The agent triggers for relevant questions
-- `/implement` and `/commands` work correctly
+- `/commands` works correctly
 - `/plugin` shows your plugin as installed
 
 ### Step 10: Clean Up
@@ -223,8 +214,7 @@ After setup, your repo structure will look like:
     ├── agents/
     │   └── YOUR_AGENT_NAME.md
     ├── commands/
-    │   ├── commands.md
-    │   └── implement.md
+    │   └── commands.md
     └── skills/
         └── .gitkeep
 ```

@@ -157,7 +157,6 @@ replace_placeholder "PLUGIN_CATEGORY" "$PLUGIN_CATEGORY" \
 
 replace_placeholder "AGENT_NAME" "$AGENT_NAME" \
   plugins/my-plugin/agents/my-agent.md \
-  plugins/my-plugin/commands/implement.md \
   README.md CLAUDE.md docs/FEATURES.md
 
 replace_placeholder "AGENT_DISPLAY_NAME" "$AGENT_DISPLAY_NAME" \
@@ -181,9 +180,6 @@ echo "Renaming directories and files..."
 
 # Update source path in marketplace.json before renaming
 "${SED_INPLACE[@]}" "s|./plugins/my-plugin|./plugins/${PLUGIN_NAME}|g" .claude-plugin/marketplace.json
-
-# Update agent reference in implement command before renaming
-"${SED_INPLACE[@]}" "s|agents/my-agent.md|agents/${AGENT_NAME}.md|g" plugins/my-plugin/commands/implement.md
 
 # Rename agent file
 mv "plugins/my-plugin/agents/my-agent.md" "plugins/my-plugin/agents/${AGENT_NAME}.md"
