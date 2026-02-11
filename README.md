@@ -1,107 +1,114 @@
 # {{REPO_NAME}}
 
-{{PLUGIN_DESCRIPTION}}
+{{MARKETPLACE_DESCRIPTION}}
 
-This repository acts as a **private plugin marketplace** (same pattern as `anthropics/claude-plugins-official`) containing a single plugin: `{{PLUGIN_NAME}}`.
+This repository acts as a **private plugin marketplace** (same pattern as `anthropics/claude-plugins-official`) that can contain multiple plugins. Each plugin is self-contained with its own agents, skills, commands, and lifecycle scripts.
+
+## Available Plugins
+
+| Plugin | Description | Version |
+|--------|-------------|---------|
+| *(none yet)* | Run `./create-plugin.sh` to add one | — |
 
 ## Prerequisites
 
 - [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) installed and available as `claude`
 - [Node.js](https://nodejs.org/) (provides `npx`, required by the Context7 MCP server)
+- Python 3 (used by `create-plugin.sh` for JSON manipulation)
 
-## Installation
+## Quick Start
 
-### Using the script
+### Install all plugins
 
 ```bash
 ./install.sh
 ```
 
-### Manual
-
-```bash
-claude plugin marketplace add {{GITHUB_OWNER}}/{{REPO_NAME}}
-claude plugin install {{PLUGIN_NAME}}@{{REPO_NAME}}
-```
-
-After installing, run `/plugin` in Claude Code to confirm the plugin is listed and enabled.
-
-## Update
-
-### Using the script
+### Update all plugins
 
 ```bash
 ./update.sh
 ```
 
-### Manual
-
-```bash
-claude plugin marketplace update {{GITHUB_OWNER}}/{{REPO_NAME}}
-claude plugin update {{PLUGIN_NAME}}@{{REPO_NAME}}
-```
-
-## Uninstall
-
-### Using the script
+### Uninstall all plugins
 
 ```bash
 ./uninstall.sh
 ```
 
-### Manual
+### Manual commands
 
 ```bash
-claude plugin uninstall {{PLUGIN_NAME}}@{{REPO_NAME}}
+# Add marketplace
+claude plugin marketplace add {{GITHUB_OWNER}}/{{REPO_NAME}}
+
+# Install a specific plugin
+claude plugin install <plugin-name>@{{MARKETPLACE_NAME}}
+
+# Update a specific plugin
+claude plugin update <plugin-name>@{{MARKETPLACE_NAME}}
+
+# Uninstall a specific plugin
+claude plugin uninstall <plugin-name>@{{MARKETPLACE_NAME}}
+
+# Remove marketplace
 claude plugin marketplace remove {{GITHUB_OWNER}}/{{REPO_NAME}}
+```
+
+After installing, run `/plugin` in Claude Code to confirm plugins are listed and enabled.
+
+## Single Plugin Management
+
+Each plugin has its own lifecycle scripts:
+
+```bash
+# Install just one plugin
+plugins/<plugin-name>/install.sh
+
+# Update just one plugin
+plugins/<plugin-name>/update.sh
+
+# Uninstall just one plugin
+plugins/<plugin-name>/uninstall.sh
 ```
 
 ## Repository Structure
 
 ```
 ├── .claude-plugin/
-│   └── marketplace.json   # Marketplace manifest (required by CLI)
-├── install.sh / update.sh / uninstall.sh
-└── plugins/{{PLUGIN_NAME}}/
+│   └── marketplace.json          # Marketplace manifest (required by CLI)
+├── create-plugin.sh              # Scaffold a new plugin
+├── install.sh / update.sh / uninstall.sh  # Root lifecycle scripts (all plugins)
+└── plugins/<plugin-name>/
     ├── .claude-plugin/
-    │   └── plugin.json    # Plugin manifest
-    ├── agents/            # Agent definitions
-    ├── skills/            # Skill definitions
-    ├── commands/          # Command definitions
+    │   └── plugin.json           # Plugin manifest
+    ├── agents/                   # Agent definitions
+    ├── skills/                   # Skill definitions
+    ├── commands/                 # Command definitions
+    ├── docs/
+    │   └── FEATURES.md           # Feature catalog for this plugin
+    ├── install.sh / update.sh / uninstall.sh  # Per-plugin lifecycle scripts
     └── README.md
 ```
 
-## Included Agent
-
-### {{AGENT_DISPLAY_NAME}} (`{{AGENT_NAME}}`)
-
-{{AGENT_DESCRIPTION_SHORT}}. The agent explores the codebase first, matches project conventions, and makes incremental, focused changes. It automatically detects and adapts to the project's technology stack rather than defaulting to a preferred technology. When referencing external documentation, it searches the Context7 MCP server first and falls back to Web Search only if needed. The agent always asks for permission before committing or sending anything to external services. After implementation, it updates README.md and CLAUDE.md to keep documentation in sync.
-
-Triggers automatically when you ask questions or request work in the agent's domain.
-
-## Included Commands
-
-| Command | Arguments | Description |
-|---------|-----------|-------------|
-| `/commands` | — | Display the quick-reference table of all commands with arguments, descriptions, and usage tips. |
-
-### `/commands`
-
-Show the quick-reference table of all available commands directly in the terminal. Handy when you need a fast reminder of what's available and how to invoke each command.
+## Adding a New Plugin
 
 ```bash
-/commands
+./create-plugin.sh <plugin-name> "<description>"
 ```
 
-## Feature Reference
+This creates the full plugin directory structure, registers it in `marketplace.json`, and generates per-plugin lifecycle scripts and documentation.
 
-See [docs/FEATURES.md](docs/FEATURES.md) for the full list of all agents, skills, and commands — including detailed workflow descriptions and usage tips.
+**Example:**
 
-## Adding Features
+```bash
+./create-plugin.sh backend-tools "AI agents for backend development"
+```
 
-1. **Agent** — Add a definition file to `plugins/{{PLUGIN_NAME}}/agents/`
-2. **Skill** — Add a definition file to `plugins/{{PLUGIN_NAME}}/skills/`
-3. **Command** — Add a definition file to `plugins/{{PLUGIN_NAME}}/commands/`
-4. Bump the `version` in both `plugins/{{PLUGIN_NAME}}/.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json`
-5. **Update documentation** — Add the new feature to both this `README.md` and `docs/FEATURES.md`
-# claude-code-plugin-template
+## Adding Features to a Plugin
+
+1. **Agent** — Add a definition file to `plugins/<plugin-name>/agents/`
+2. **Skill** — Add a definition file to `plugins/<plugin-name>/skills/`
+3. **Command** — Add a definition file to `plugins/<plugin-name>/commands/`
+4. Bump the `version` in `plugins/<plugin-name>/.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json`
+5. **Update documentation** — Update the plugin's `README.md` and `docs/FEATURES.md`

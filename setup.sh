@@ -2,11 +2,10 @@
 set -euo pipefail
 
 # ─────────────────────────────────────────────────────────────
-# setup.sh — Interactive setup for Claude Code plugin template
+# setup.sh — Interactive setup for Claude Code plugin marketplace
 # ─────────────────────────────────────────────────────────────
-# Prompts for all 12 placeholder values, replaces them across
-# the repo, renames directories/files, and optionally removes
-# itself when done.
+# Prompts for 5 marketplace-level placeholder values, replaces
+# them across the repo, and optionally removes itself when done.
 # ─────────────────────────────────────────────────────────────
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -64,26 +63,19 @@ replace_placeholder() {
 
 echo ""
 echo "╔══════════════════════════════════════════════════════╗"
-echo "║   Claude Code Plugin — Interactive Setup             ║"
+echo "║   Claude Code Marketplace — Interactive Setup        ║"
 echo "╠══════════════════════════════════════════════════════╣"
-echo "║  Answer the prompts below to configure your plugin.  ║"
-echo "║  Press Enter to accept [default] values.             ║"
+echo "║  Answer the prompts below to configure your          ║"
+echo "║  marketplace. Press Enter to accept [default] values.║"
 echo "╚══════════════════════════════════════════════════════╝"
 
 # ── Collect values ───────────────────────────────────────────
 
 GITHUB_OWNER=$(prompt_value "GITHUB_OWNER" "GitHub username or org" "janedoe")
-REPO_NAME=$(prompt_value "REPO_NAME" "Repository name" "ai-agent-backend")
-PLUGIN_NAME=$(prompt_value "PLUGIN_NAME" "Plugin identifier (kebab-case)" "backend")
-PLUGIN_DESCRIPTION=$(prompt_value "PLUGIN_DESCRIPTION" "One-line plugin description" "AI agents for backend development")
-AUTHOR_NAME=$(prompt_value "AUTHOR_NAME" "Author display name" "Jane Doe")
-PLUGIN_VERSION=$(prompt_value "PLUGIN_VERSION" "Initial semver version" "0.1.0" "0.1.0")
-PLUGIN_CATEGORY=$(prompt_value "PLUGIN_CATEGORY" "Marketplace category" "development" "development")
-AGENT_NAME=$(prompt_value "AGENT_NAME" "Agent identifier (kebab-case)" "backend-developer")
-AGENT_DISPLAY_NAME=$(prompt_value "AGENT_DISPLAY_NAME" "Human-readable agent name" "Backend Developer")
-AGENT_DESCRIPTION_SHORT=$(prompt_value "AGENT_DESCRIPTION_SHORT" "One-sentence agent summary" "A backend developer agent")
-AGENT_ROLE=$(prompt_value "AGENT_ROLE" "Role line (follows 'You are')" "a senior backend developer with deep expertise in server-side architecture")
-AGENT_COLOR=$(prompt_value "AGENT_COLOR" "Agent color in Claude Code" "green, blue, red, yellow, cyan, magenta" "blue")
+REPO_NAME=$(prompt_value "REPO_NAME" "Repository name" "my-claude-marketplace")
+MARKETPLACE_NAME=$(prompt_value "MARKETPLACE_NAME" "Short marketplace identifier (used in plugin@marketplace)" "my-marketplace")
+MARKETPLACE_DESCRIPTION=$(prompt_value "MARKETPLACE_DESCRIPTION" "One-line marketplace description" "A collection of Claude Code plugins")
+AUTHOR_NAME=$(prompt_value "AUTHOR_NAME" "Default author name for plugins" "Jane Doe")
 
 # ── Confirm ──────────────────────────────────────────────────
 
@@ -91,18 +83,11 @@ echo ""
 echo "─────────────────────────────────────────────────────"
 echo "  Review your values:"
 echo "─────────────────────────────────────────────────────"
-echo "  GITHUB_OWNER:          $GITHUB_OWNER"
-echo "  REPO_NAME:             $REPO_NAME"
-echo "  PLUGIN_NAME:           $PLUGIN_NAME"
-echo "  PLUGIN_DESCRIPTION:    $PLUGIN_DESCRIPTION"
-echo "  AUTHOR_NAME:           $AUTHOR_NAME"
-echo "  PLUGIN_VERSION:        $PLUGIN_VERSION"
-echo "  PLUGIN_CATEGORY:       $PLUGIN_CATEGORY"
-echo "  AGENT_NAME:            $AGENT_NAME"
-echo "  AGENT_DISPLAY_NAME:    $AGENT_DISPLAY_NAME"
-echo "  AGENT_DESCRIPTION_SHORT: $AGENT_DESCRIPTION_SHORT"
-echo "  AGENT_ROLE:            $AGENT_ROLE"
-echo "  AGENT_COLOR:           $AGENT_COLOR"
+echo "  GITHUB_OWNER:            $GITHUB_OWNER"
+echo "  REPO_NAME:               $REPO_NAME"
+echo "  MARKETPLACE_NAME:        $MARKETPLACE_NAME"
+echo "  MARKETPLACE_DESCRIPTION: $MARKETPLACE_DESCRIPTION"
+echo "  AUTHOR_NAME:             $AUTHOR_NAME"
 echo "─────────────────────────────────────────────────────"
 echo ""
 printf "Proceed with these values? [Y/n]: "
@@ -117,84 +102,30 @@ fi
 echo ""
 echo "Replacing placeholders..."
 
-replace_placeholder "GITHUB_OWNER" "$GITHUB_OWNER" \
-  .claude-plugin/marketplace.json \
-  plugins/my-plugin/.claude-plugin/plugin.json \
-  install.sh update.sh uninstall.sh \
-  README.md CLAUDE.md
-
-replace_placeholder "REPO_NAME" "$REPO_NAME" \
-  .claude-plugin/marketplace.json \
-  plugins/my-plugin/.claude-plugin/plugin.json \
-  install.sh update.sh uninstall.sh \
-  README.md CLAUDE.md
-
-replace_placeholder "PLUGIN_NAME" "$PLUGIN_NAME" \
-  .claude-plugin/marketplace.json \
-  plugins/my-plugin/.claude-plugin/plugin.json \
-  plugins/my-plugin/README.md \
-  plugins/my-plugin/commands/commands.md \
-  install.sh update.sh uninstall.sh \
-  README.md CLAUDE.md docs/FEATURES.md
-
-replace_placeholder "PLUGIN_DESCRIPTION" "$PLUGIN_DESCRIPTION" \
-  .claude-plugin/marketplace.json \
-  plugins/my-plugin/.claude-plugin/plugin.json \
-  plugins/my-plugin/README.md \
-  README.md
-
-replace_placeholder "AUTHOR_NAME" "$AUTHOR_NAME" \
-  .claude-plugin/marketplace.json \
-  plugins/my-plugin/.claude-plugin/plugin.json
-
-replace_placeholder "PLUGIN_VERSION" "$PLUGIN_VERSION" \
-  .claude-plugin/marketplace.json \
-  plugins/my-plugin/.claude-plugin/plugin.json \
-  CLAUDE.md
-
-replace_placeholder "PLUGIN_CATEGORY" "$PLUGIN_CATEGORY" \
+# Files that contain marketplace-level placeholders
+TARGET_FILES=(
   .claude-plugin/marketplace.json
-
-replace_placeholder "AGENT_NAME" "$AGENT_NAME" \
-  plugins/my-plugin/agents/my-agent.md \
-  README.md CLAUDE.md docs/FEATURES.md
-
-replace_placeholder "AGENT_DISPLAY_NAME" "$AGENT_DISPLAY_NAME" \
+  create-plugin.sh
+  install.sh
+  update.sh
+  uninstall.sh
   README.md
+  CLAUDE.md
+)
 
-replace_placeholder "AGENT_DESCRIPTION_SHORT" "$AGENT_DESCRIPTION_SHORT" \
-  README.md docs/FEATURES.md
-
-replace_placeholder "AGENT_ROLE" "$AGENT_ROLE" \
-  plugins/my-plugin/agents/my-agent.md
-
-replace_placeholder "AGENT_COLOR" "$AGENT_COLOR" \
-  plugins/my-plugin/agents/my-agent.md
+replace_placeholder "GITHUB_OWNER" "$GITHUB_OWNER" "${TARGET_FILES[@]}"
+replace_placeholder "REPO_NAME" "$REPO_NAME" "${TARGET_FILES[@]}"
+replace_placeholder "MARKETPLACE_NAME" "$MARKETPLACE_NAME" "${TARGET_FILES[@]}"
+replace_placeholder "MARKETPLACE_DESCRIPTION" "$MARKETPLACE_DESCRIPTION" "${TARGET_FILES[@]}"
+replace_placeholder "AUTHOR_NAME" "$AUTHOR_NAME" "${TARGET_FILES[@]}"
 
 echo "  Done."
 
-# ── Rename directories and files ─────────────────────────────
-
-echo ""
-echo "Renaming directories and files..."
-
-# Update source path in marketplace.json before renaming
-"${SED_INPLACE[@]}" "s|./plugins/my-plugin|./plugins/${PLUGIN_NAME}|g" .claude-plugin/marketplace.json
-
-# Rename agent file
-mv "plugins/my-plugin/agents/my-agent.md" "plugins/my-plugin/agents/${AGENT_NAME}.md"
-
-# Rename plugin directory
-mv "plugins/my-plugin" "plugins/${PLUGIN_NAME}"
-
-echo "  plugins/my-plugin/ → plugins/${PLUGIN_NAME}/"
-echo "  my-agent.md → ${AGENT_NAME}.md"
-
 # ── Make scripts executable ──────────────────────────────────
 
-chmod +x install.sh update.sh uninstall.sh
+chmod +x install.sh update.sh uninstall.sh create-plugin.sh
 echo ""
-echo "Made lifecycle scripts executable."
+echo "Made all scripts executable."
 
 # ── Summary ──────────────────────────────────────────────────
 
@@ -204,12 +135,11 @@ echo "║   Setup complete!                                    ║"
 echo "╚══════════════════════════════════════════════════════╝"
 echo ""
 echo "Next steps:"
-echo "  1. Customize the agent:  plugins/${PLUGIN_NAME}/agents/${AGENT_NAME}.md"
-echo "     - Update the examples in the frontmatter"
-echo "     - Replace Core Competencies (marked <!-- CUSTOMIZE -->)"
-echo "  2. Review the commands:  plugins/${PLUGIN_NAME}/commands/"
+echo "  1. Create your first plugin:"
+echo "     ./create-plugin.sh my-plugin \"My first plugin\""
+echo "  2. Add agents, skills, and commands to the plugin"
 echo "  3. Commit and push:"
-echo "     git add -A && git commit -m 'Initial plugin setup'"
+echo "     git add -A && git commit -m 'Initial marketplace setup'"
 echo "     git remote add origin git@github.com:${GITHUB_OWNER}/${REPO_NAME}.git"
 echo "     git push -u origin main"
 echo "  4. Install: ./install.sh"

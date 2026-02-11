@@ -1,9 +1,0 @@
-{
-  "name": "{{PLUGIN_NAME}}",
-  "description": "{{PLUGIN_DESCRIPTION}}",
-  "version": "{{PLUGIN_VERSION}}",
-  "author": {
-    "name": "{{AUTHOR_NAME}}"
-  },
-  "repository": "https://github.com/{{GITHUB_OWNER}}/{{REPO_NAME}}"
-}
