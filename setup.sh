@@ -29,16 +29,16 @@ prompt_value() {
 
   while [[ -z "$value" ]]; do
     if [[ -n "$default" ]]; then
-      printf "\n%s\n  %s (e.g., %s)\n  [default: %s]: " "$var_name" "$description" "$example" "$default"
+      printf "\n%s\n  %s (e.g., %s)\n  [default: %s]: " "$var_name" "$description" "$example" "$default" >&2
     else
-      printf "\n%s\n  %s (e.g., %s)\n  : " "$var_name" "$description" "$example"
+      printf "\n%s\n  %s (e.g., %s)\n  : " "$var_name" "$description" "$example" >&2
     fi
     read -r value
     if [[ -z "$value" && -n "$default" ]]; then
       value="$default"
     fi
     if [[ -z "$value" ]]; then
-      echo "  Value cannot be empty. Please try again."
+      echo "  Value cannot be empty. Please try again." >&2
     fi
   done
 
